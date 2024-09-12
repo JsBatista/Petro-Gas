@@ -1,6 +1,9 @@
+from io import StringIO
+import pandas as pd
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from fastapi import UploadFile
 from pathlib import Path
 from typing import Any
 
@@ -10,12 +13,59 @@ from jinja2 import Template
 from jwt.exceptions import InvalidTokenError
 
 from app.core.config import settings
+from app.models import SensorDataFetchMode, SensorDataDashboardFetch
 
 
 @dataclass
 class EmailData:
     html_content: str
     subject: str
+
+async def read_csv_sensor_data_file(sensor_data_csv_file: UploadFile):
+    contents = sensor_data_csv_file.file.read()
+    data = StringIO(str(contents,'utf-8')) 
+    df = pd.read_csv(data)
+
+    # We need to check if we have at least all the columns that we are expecting
+    columns = df.columns.tolist()
+    if(
+        ("equipmentId" not in columns and "equipment_id" not in columns) or 
+        "timestamp" not in columns or 
+        "value" not in columns
+    ):
+        raise ValueError("Csv file outside expected format")
+
+    # Since the model csv file has equipmentId instead of equipment_id, we need 
+    # to rename it
+    df = df.rename(columns={"equipmentId": "equipment_id"})
+    records = df.to_dict('records')
+    data.close()
+
+    return records
+
+
+def get_data_interval(fetch_data: SensorDataDashboardFetch):
+    today = datetime.today()
+    today = datetime(2023, 2, 22, 0, 0)
+    end_date = today
+
+    if(fetch_data.fetch_mode == SensorDataFetchMode.LAST_24H):
+        begin_date = today - timedelta(days=1)
+    elif(fetch_data.fetch_mode == SensorDataFetchMode.LAST_48H):
+        begin_date = today - timedelta(days=2)
+    elif(fetch_data.fetch_mode == SensorDataFetchMode.LAST_WEEK):
+        begin_date = today - timedelta(weeks=1)
+    elif(fetch_data.fetch_mode == SensorDataFetchMode.LAST_MONTH):
+        begin_date = today - timedelta(days=30)
+    elif(fetch_data.fetch_mode == SensorDataFetchMode.CUSTOM 
+            and fetch_data.begin_custom_date != None 
+            and fetch_data.end_custom_date != None):
+        begin_date = fetch_data.begin_custom_date
+        end_date = fetch_data.end_custom_date
+    else:
+        raise ValueError("Fetch parameters outside expected format")
+
+    return (begin_date, end_date)
 
 
 def render_email_template(*, template_name: str, context: dict[str, Any]) -> str:
