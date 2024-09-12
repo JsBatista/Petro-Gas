@@ -18,6 +18,10 @@ import type {
   ItemPublic,
   ItemsPublic,
   ItemUpdate,
+  SensorDataCreate,
+  SensorDataUpdate,
+  SensorDataPublic,
+  SensorDataListPublic
 } from "./models"
 
 export type TDataLoginAccessToken = {
@@ -506,6 +510,163 @@ export class ItemsService {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/v1/items/{id}",
+      path: {
+        id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+}
+
+export type TDataReadSensorsData = {
+  limit?: number
+  skip?: number
+}
+export type TDataCreateSensorData = {
+  requestBody: SensorDataCreate
+}
+export type TDataReadSensorData = {
+  id: string
+}
+export type TDataReadSensorDataEquipment = {
+  equipment_id: string
+}
+export type TDataUpdateSensorData = {
+  id: string
+  requestBody: SensorDataUpdate
+}
+export type TDataDeleteSensorData = {
+  id: string
+}
+
+export class SensorDataService {
+  /**
+   * Read Sensors Data
+   * Retrieve sensors data.
+   * @returns SensorDataListPublic Successful Response
+   * @throws ApiError
+   */
+  public static readSensorsData(
+    data: TDataReadSensorsData = {},
+  ): CancelablePromise<SensorDataListPublic> {
+    const { limit = 100, skip = 0 } = data
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/sensor-data/",
+      query: {
+        skip,
+        limit,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+  /**
+   * Create SensorData
+   * Create a new registry of sensor data.
+   * @returns SensorDataPublic Successful Response
+   * @throws ApiError
+   */
+  public static createSensorData(
+    data: TDataCreateSensorData,
+  ): CancelablePromise<SensorDataPublic> {
+    const { requestBody } = data
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/sensor-data/",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+  
+  /**
+   * Read Sensor Data
+   * Get sensor data by ID.
+   * @returns ItemPublic Successful Response
+   * @throws ApiError
+   */
+   public static readSensorData(
+    data: TDataReadSensorData
+    ): CancelablePromise<ItemPublic> {
+    const { id } = data
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/sensor-data/{id}",
+      path: {
+        id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+  /**
+   * Read Sensor Data
+   * Get sensor data by equipment ID.
+   * @returns ItemPublic Successful Response
+   * @throws ApiError
+   */
+  public static readSensorDataByEquipment(
+    data: TDataReadSensorDataEquipment
+    ): CancelablePromise<ItemPublic> {
+    const { equipment_id } = data
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/sensor-data/equipment/{equipment_id}",
+      path: {
+        equipment_id,
+      },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+  /**
+   * Update SensorData
+   * Update a sensor data registry.
+   * @returns ItemPublic Successful Response
+   * @throws ApiError
+   */
+  public static updateSensorData(
+    data: TDataUpdateSensorData,
+  ): CancelablePromise<SensorDataPublic> {
+    const { id, requestBody } = data
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/sensor-data/{id}",
+      path: {
+        id,
+      },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+  /**
+   * Delete Sensor Data
+   * Delete a sensor data registry.
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deleteSensorData(
+    data: TDataDeleteSensorData
+    ): CancelablePromise<Message> {
+    const { id } = data
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/sensor-data/{id}",
       path: {
         id,
       },

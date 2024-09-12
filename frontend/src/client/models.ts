@@ -42,6 +42,30 @@ export type NewPassword = {
   new_password: string
 }
 
+export type SensorDataCreate = {
+  equipment_id: string
+  value: number
+  timestamp: Date
+}
+
+export type SensorDataPublic = {
+  id: string
+  equipment_id: string
+  value: number
+  timestamp: Date
+}
+
+export type SensorDataUpdate = {
+  equipment_id: string
+  value: number
+  timestamp: Date
+}
+
+export type SensorDataListPublic = {
+  data: Array<SensorDataPublic>
+  count: number
+}
+
 export type Token = {
   access_token: string
   token_type?: string
