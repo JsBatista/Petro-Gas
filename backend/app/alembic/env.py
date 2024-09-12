@@ -4,6 +4,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from alembic_utils.replaceable_entity import register_entities
+from app.sql_functions import avg_last_24
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -77,6 +80,8 @@ def run_migrations_online():
         with context.begin_transaction():
             context.run_migrations()
 
+
+register_entities([avg_last_24])
 
 if context.is_offline_mode():
     run_migrations_offline()

@@ -20,6 +20,28 @@ typing-extensions = ">=4"
 tz = ["backports.zoneinfo"]
 
 [[package]]
+name = "alembic-utils"
+version = "0.8.4"
+description = "A sqlalchemy/alembic extension for migrating procedures and views"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "alembic_utils-0.8.4.tar.gz", hash = "sha256:825fad8091e5d780a026931b19c44ca007884f76d29221eda146441747a3435a"},
+]
+
+[package.dependencies]
+alembic = ">=1.9"
+flupy = "*"
+parse = ">=1.8.4"
+sqlalchemy = ">=1.4"
+typing_extensions = "*"
+
+[package.extras]
+dev = ["black", "mkdocs", "mypy", "pre-commit", "psycopg2-binary", "pylint", "pytest", "pytest-cov"]
+docs = ["mkautodoc", "mkdocs", "pygments", "pymdown-extensions"]
+nvim = ["neovim", "python-language-server"]
+
+[[package]]
 name = "annotated-types"
 version = "0.7.0"
 description = "Reusable constraint types to use with typing.Annotated"
@@ -460,6 +482,22 @@ files = [
 docs = ["furo (>=2023.9.10)", "sphinx (>=7.2.6)", "sphinx-autodoc-typehints (>=1.25.2)"]
 testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", "pytest (>=7.4.3)", "pytest-asyncio (>=0.21)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)", "pytest-timeout (>=2.2)", "virtualenv (>=20.26.2)"]
 typing = ["typing-extensions (>=4.8)"]
+
+[[package]]
+name = "flupy"
+version = "1.2.1"
+description = "Method chaining built on generators"
+optional = false
+python-versions = "*"
+files = [
+    {file = "flupy-1.2.1.tar.gz", hash = "sha256:42aab3b4b3eb1984a4616c40d8f049ecdee546eaad9467470731d456dbff7fa4"},
+]
+
+[package.dependencies]
+typing_extensions = ">=4"
+
+[package.extras]
+dev = ["black", "mypy", "pre-commit", "pylint", "pytest", "pytest-benchmark", "pytest-cov"]
 
 [[package]]
 name = "greenlet"
@@ -1181,6 +1219,17 @@ spss = ["pyreadstat (>=1.2.0)"]
 sql-other = ["SQLAlchemy (>=2.0.0)", "adbc-driver-postgresql (>=0.8.0)", "adbc-driver-sqlite (>=0.8.0)"]
 test = ["hypothesis (>=6.46.1)", "pytest (>=7.3.2)", "pytest-xdist (>=2.2.0)"]
 xml = ["lxml (>=4.9.2)"]
+
+[[package]]
+name = "parse"
+version = "1.20.2"
+description = "parse() is the opposite of format()"
+optional = false
+python-versions = "*"
+files = [
+    {file = "parse-1.20.2-py2.py3-none-any.whl", hash = "sha256:967095588cb802add9177d0c0b6133b5ba33b1ea9007ca800e526f42a85af558"},
+    {file = "parse-1.20.2.tar.gz", hash = "sha256:b41d604d16503c79d81af5165155c0b20f6c8d6c559efa66b4b695c3e5a0a0ce"},
+]
 
 [[package]]
 name = "passlib"
@@ -2227,4 +2276,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b2c2eaa20c96ac262cb737cb952aa5e0fe1d188352662548a4054da857c20430"
+content-hash = "6f4be37122674b1504cf8b144ad79312c93a4bf15a30844c074aaf2c0c74bcc1"

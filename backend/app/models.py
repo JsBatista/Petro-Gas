@@ -1,8 +1,11 @@
 from datetime import datetime
+from enum import Enum
+from typing import Any, Optional
+import math
 import uuid
 
-from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
+from pydantic import EmailStr, model_validator
+from sqlmodel import Field, SQLModel
 
 
 # Shared properties
@@ -86,11 +89,14 @@ class SensorDataBase(SQLModel):
 
 # Properties to receive on sensor data creation
 class SensorDataCreate(SensorDataBase):
+    pass
+
+# Properties to receive on sensor data creation
+class SensorDataCreateCsv(SensorDataBase):
     def __init__(self, df_row):
         self.equipment_id = df_row[0]
         self.timestamp = df_row[1]
         self.value = df_row[2]
-
 
 # Properties to receive on sensor data update
 class SensorDataUpdate(SensorDataBase):
@@ -105,6 +111,16 @@ class SensorData(SensorDataBase, table=True):
     value: float
     timestamp: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
+    # Stop NaN values from being added to the object
+    @model_validator(mode='before')
+    @classmethod
+    def check_value_for_nan(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            assert (
+                not math.isnan(data['value'])
+            ), 'Value cannot be NaN'
+        return data
+
 
 # Properties to return via API, id is always required
 class SensorDataPublic(SensorDataBase):
@@ -114,3 +130,59 @@ class SensorDataPublic(SensorDataBase):
 class SensorDataListPublic(SQLModel):
     data: list[SensorDataPublic]
     count: int
+
+
+class SensorDataCsvImportStatus(SQLModel):
+    count_success: int
+    count_fail: int
+
+    def __init__(self, data_success, data_fail, count_success, count_fail):
+        self.count_success = count_success
+        self.count_fail = count_fail
+
+
+class SensorDataFetchMode(Enum):
+    LAST_24H = 1
+    LAST_48H = 2
+    LAST_WEEK = 3
+    LAST_MONTH = 4
+    CUSTOM = 5
+
+
+# Properties to receive on dashboard queries
+class SensorDataDashboardFetch(SQLModel):
+    fetch_mode: SensorDataFetchMode
+    begin_custom_date: Optional[datetime] = Field(None, description="The start of the date interval for custom fetch.")
+    end_custom_date: Optional[datetime] = Field(None, description="The end of the date interval for custom fetch.")
+    equipment_ids: Optional[list[str]] = Field(None, description="The list of equipments id to filter.")
+
+
+# Properties to receive on dashboard queries
+class SensorDataLineChartDashboardItem(SQLModel):
+    equipment_id: str
+    date_trunc: datetime
+    avg: float
+
+    def __init__(self, row):
+        self.equipment_id=row['equipment'],
+        self.date_trunc=row['date_trunc'],
+        self.avg=row['avg']
+
+
+# Properties to receive on dashboard queries
+class SensorDataLineChartDashboard(SQLModel):
+    data: list[SensorDataLineChartDashboardItem]
+
+
+class SensorDataBarChartDashboardItem(SQLModel):
+    equipment_id: str
+    avg: float
+
+    def __init__(self, row):
+        self.equipment_id=row['equipment_id']
+        self.avg=row['avg']
+
+
+# Properties to receive on dashboard queries
+class SensorDataBarChartDashboard(SQLModel):
+    data: list[SensorDataBarChartDashboardItem]
