@@ -56,6 +56,11 @@ def get_data_interval(fetch_data: SensorDataDashboardFetch):
         begin_date = today - timedelta(weeks=1)
     elif(fetch_data.fetch_mode == SensorDataFetchMode.LAST_MONTH):
         begin_date = today - timedelta(days=30)
+    elif(fetch_data.fetch_mode == SensorDataFetchMode.CUSTOM 
+        and fetch_data.begin_custom_date != None 
+        and fetch_data.end_custom_date != None):
+        begin_date = fetch_data.begin_custom_date
+        end_date = fetch_data.end_custom_date
     else:
         raise ValueError("Fetch parameters outside expected format")
 

@@ -545,11 +545,14 @@ export enum TDataSensorDataFetchMode {
   LAST_24H = 1,
   LAST_48H = 2,
   LAST_WEEK = 3,
-  LAST_MONTH = 4
+  LAST_MONTH = 4,
+  CUSTOM = 5
 }
 
 export type TDataSensorDataDashboardFetch = { 
   fetch_mode: TDataSensorDataFetchMode
+  begin_custom_date?: Date | null
+  end_custom_date?: Date | null
   equipment_ids?: string[] | null
 }
 
