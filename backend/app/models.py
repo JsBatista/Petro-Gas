@@ -136,7 +136,7 @@ class SensorDataCsvImportStatus(SQLModel):
     count_success: int
     count_fail: int
 
-    def __init__(self, data_success, data_fail, count_success, count_fail):
+    def __init__(self, count_success, count_fail):
         self.count_success = count_success
         self.count_fail = count_fail
 
@@ -146,14 +146,11 @@ class SensorDataFetchMode(Enum):
     LAST_48H = 2
     LAST_WEEK = 3
     LAST_MONTH = 4
-    CUSTOM = 5
 
 
 # Properties to receive on dashboard queries
 class SensorDataDashboardFetch(SQLModel):
     fetch_mode: SensorDataFetchMode
-    begin_custom_date: Optional[datetime] = Field(None, description="The start of the date interval for custom fetch.")
-    end_custom_date: Optional[datetime] = Field(None, description="The end of the date interval for custom fetch.")
     equipment_ids: Optional[list[str]] = Field(None, description="The list of equipments id to filter.")
 
 
@@ -186,3 +183,16 @@ class SensorDataBarChartDashboardItem(SQLModel):
 # Properties to receive on dashboard queries
 class SensorDataBarChartDashboard(SQLModel):
     data: list[SensorDataBarChartDashboardItem]
+
+
+class Option(SQLModel):
+    value: str
+    label: str
+    
+    def __init__(self, value, label = None):
+        self.value = value
+        self.label = value if label is None else label 
+
+
+class OptionList(SQLModel):
+    data: list[Option]

@@ -8,6 +8,8 @@ from sqlalchemy import func, sql, and_
 
 from app.api.deps import SessionDependency, CurrentUserDependency
 from app.models import (
+    OptionList,
+    Option,
     SensorData, 
     SensorDataCreate,
     SensorDataPublic, 
@@ -41,10 +43,36 @@ def read_sensors_data(
         SensorData
     ).order_by(
         SensorData.timestamp.desc()
+    ).order_by(
+        SensorData.equipment_id
     ).offset(skip).limit(limit)
     items = session.exec(query).all()
 
     return SensorDataListPublic(data=items, count=count)
+
+
+@router.get("/options/equipment", response_model=OptionList)
+def read_equipment_options(
+    session: SessionDependency,
+) -> Any:
+    """
+    Retrieve unique options for all equipment ids present in the database.
+    """
+
+    query = select(
+        SensorData.equipment_id
+    ).select_from(
+        SensorData
+    ).distinct()
+    
+    result = session.exec(query).all()
+
+    items: List[Option] = [
+        Option(row)
+        for row in result
+    ]
+
+    return OptionList(data=items)
 
 
 @router.get("/{id}", response_model=SensorDataPublic)
@@ -106,9 +134,9 @@ def read_sensor_data_for_bar_chart(
     current_user: CurrentUserDependency,
     fetch_data: SensorDataDashboardFetch) -> Any:
     """
-    Get values from hour to hour from the last day. 
+    Get average of values from the specified time period.
     
-    Not required, but can be used to create line graphs to show the average values over time for an equipment.
+    Used for the dashboard bar chart.
     """
     if(not current_user):
         raise HTTPException(
@@ -194,6 +222,11 @@ async def create_sensor_data_from_csv(
         raise HTTPException(
             status_code=401,
             detail="Not authenticated",
+        )
+    if not current_user.is_superuser:
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges",
         )
 
     try:
