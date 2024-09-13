@@ -3,11 +3,13 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { FiBriefcase, FiHome, FiSettings, FiUsers } from "react-icons/fi"
 import { MdOutlineSensors } from "react-icons/md";
+import { VscGraph } from "react-icons/vsc";
 
 import type { UserPublic } from "../../client"
 
 const items = [
-  { icon: FiHome, title: "Dashboard", path: "/" },
+  { icon: FiHome, title: "Home", path: "/" },
+  { icon: VscGraph, title: "Dashboard", path: "/dashboard" },
   { icon: MdOutlineSensors, title: "Sensors", path: "/sensors" },
   { icon: FiSettings, title: "User Settings", path: "/settings" },
 ]

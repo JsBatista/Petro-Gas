@@ -541,6 +541,30 @@ export type TDataDeleteSensorData = {
   id: string
 }
 
+export enum TDataSensorDataFetchMode {
+  LAST_24H = 1,
+  LAST_48H = 2,
+  LAST_WEEK = 3,
+  LAST_MONTH = 4,
+  CUSTOM = 5
+}
+
+export type TDataSensorDataDashboardFetch = { 
+  fetch_mode: TDataSensorDataFetchMode
+  begin_custom_date?: Date | null
+  end_custom_date?: Date | null
+  equipment_ids?: string[] | null
+}
+
+export type TDataSensorDataBarChartDashboardItem = {
+  equipment_id: string
+  avg: number
+}
+
+export type TDataSensorDataBarChartDashboard = {
+  data: TDataSensorDataBarChartDashboardItem[]
+}
+
 export class SensorDataService {
   /**
    * Read Sensors Data
@@ -670,6 +694,25 @@ export class SensorDataService {
       path: {
         id,
       },
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+
+  /**
+   * Retrieves sensor data for bar chart rendering
+   * @returns TDataSensorDataBarChartDashboard Successful Response
+   * @throws ApiError
+   */
+   public static readSensorDataDashboardBarChart(
+    data: TDataSensorDataDashboardFetch,
+  ): CancelablePromise<TDataSensorDataBarChartDashboard> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/sensor-data/dashboard/bar-chart",
+      body: data,
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
