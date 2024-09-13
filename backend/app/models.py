@@ -146,12 +146,15 @@ class SensorDataFetchMode(Enum):
     LAST_48H = 2
     LAST_WEEK = 3
     LAST_MONTH = 4
+    CUSTOM = 5
 
 
 # Properties to receive on dashboard queries
 class SensorDataDashboardFetch(SQLModel):
     fetch_mode: SensorDataFetchMode
     equipment_ids: Optional[list[str]] = Field(None, description="The list of equipments id to filter.")
+    begin_custom_date: Optional[datetime] = Field(None, description="The start of the date interval for custom fetch.")
+    end_custom_date: Optional[datetime] = Field(None, description="The end of the date interval for custom fetch.")
 
 
 # Properties to receive on dashboard queries
