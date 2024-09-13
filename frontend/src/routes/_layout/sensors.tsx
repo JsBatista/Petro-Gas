@@ -16,6 +16,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { z } from "zod"
+import { format } from "date-fns";
 
 import { SensorDataService } from "../../client"
 import ActionsMenu from "../../components/Common/ActionsMenu"
@@ -96,7 +97,7 @@ function SensorDataTable() {
                     {sensorData.equipment_id}
                   </Td>
                   <Td isTruncated maxWidth="150px">
-                    {sensorData.timestamp}
+                    {format(sensorData.timestamp, "dd/MM/yyyy HH:mm:ss")}
                   </Td>
                   <Td isTruncated maxWidth="150px">
                     {sensorData.value}

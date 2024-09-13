@@ -1,4 +1,4 @@
-import { Box, Container, Text } from "@chakra-ui/react"
+import { Box, Container, SkeletonText, Table, TableContainer, Tbody, Td, Text, Tr } from "@chakra-ui/react"
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router"
 import { BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar, Rectangle, Tooltip } from "recharts"
@@ -36,12 +36,24 @@ function Dashboard() {
 
   return (
     <>
-      <Container maxW="full">
+      <TableContainer>
+        <Table size={{ base: "sm", md: "md" }}>
         <Box pt={12} m={4}>
           <Text fontSize="2xl">
             Dashboard
           </Text>
-          <BarChart
+          {isPending ? (
+            <Tbody>
+              <Tr>
+                {new Array(4).fill(null).map((_, index) => (
+                  <Td key={index}>
+                    <SkeletonText noOfLines={1} paddingBlock="16px" />
+                  </Td>
+                ))}
+              </Tr>
+            </Tbody>
+          ) :(
+            <BarChart
               width={500}
               height={300}
               data={sensorsData?.data}
@@ -59,8 +71,10 @@ function Dashboard() {
               <Legend />
               <Bar dataKey="avg" fill="#3474eb" activeBar={<Rectangle fill="#14c741" />} />
             </BarChart>
+          )}
         </Box>
-      </Container>
+        </Table>
+      </TableContainer>
     </>
   )
 }

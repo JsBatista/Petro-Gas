@@ -9,14 +9,14 @@ import {
 import { BsThreeDotsVertical } from "react-icons/bs"
 import { FiEdit, FiTrash } from "react-icons/fi"
 
-import type { ItemPublic, UserPublic } from "../../client"
+import type { SensorDataPublic, UserPublic } from "../../client"
 import EditUser from "../Admin/EditUser"
 import EditSensorData from "../SensorData/EditSensorData"
 import Delete from "./DeleteAlert"
 
 interface ActionsMenuProps {
   type: string
-  value: ItemPublic | UserPublic
+  value: SensorDataPublic | UserPublic
   disabled?: boolean
 }
 
@@ -56,7 +56,7 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
           />
         ) : (
           <EditSensorData
-            item={value as ItemPublic}
+            sensorData={value as SensorDataPublic}
             isOpen={editUserModal.isOpen}
             onClose={editUserModal.onClose}
           />
