@@ -46,7 +46,7 @@ const EditSensorData = ({ sensorData, isOpen, onClose }: EditSensorDataProps) =>
 
   const mutation = useMutation({
     mutationFn: (data: SensorDataUpdate) =>
-      SensorDataService.updateItem({ id: sensorData.id, requestBody: data }),
+      SensorDataService.updateSensorData({ id: sensorData.id, requestBody: data }),
     onSuccess: () => {
       showToast("Success!", "Sensor Data updated successfully.", "success")
       onClose()
