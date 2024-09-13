@@ -46,7 +46,6 @@ async def read_csv_sensor_data_file(sensor_data_csv_file: UploadFile):
 
 def get_data_interval(fetch_data: SensorDataDashboardFetch):
     today = datetime.today()
-    today = datetime(2023, 2, 22, 0, 0)
     end_date = today
 
     if(fetch_data.fetch_mode == SensorDataFetchMode.LAST_24H):
@@ -57,11 +56,6 @@ def get_data_interval(fetch_data: SensorDataDashboardFetch):
         begin_date = today - timedelta(weeks=1)
     elif(fetch_data.fetch_mode == SensorDataFetchMode.LAST_MONTH):
         begin_date = today - timedelta(days=30)
-    elif(fetch_data.fetch_mode == SensorDataFetchMode.CUSTOM 
-            and fetch_data.begin_custom_date != None 
-            and fetch_data.end_custom_date != None):
-        begin_date = fetch_data.begin_custom_date
-        end_date = fetch_data.end_custom_date
     else:
         raise ValueError("Fetch parameters outside expected format")
 

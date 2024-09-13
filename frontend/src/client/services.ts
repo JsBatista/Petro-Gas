@@ -545,14 +545,11 @@ export enum TDataSensorDataFetchMode {
   LAST_24H = 1,
   LAST_48H = 2,
   LAST_WEEK = 3,
-  LAST_MONTH = 4,
-  CUSTOM = 5
+  LAST_MONTH = 4
 }
 
 export type TDataSensorDataDashboardFetch = { 
   fetch_mode: TDataSensorDataFetchMode
-  begin_custom_date?: Date | null
-  end_custom_date?: Date | null
   equipment_ids?: string[] | null
 }
 
@@ -563,6 +560,20 @@ export type TDataSensorDataBarChartDashboardItem = {
 
 export type TDataSensorDataBarChartDashboard = {
   data: TDataSensorDataBarChartDashboardItem[]
+}
+
+export type TDataSensorDataCsvImportStatus = {
+  count_success: number
+  count_fail: number
+}
+
+export type TDataOptionList = {
+  data: TDataOption[]
+}
+
+export type TDataOption = {
+  value: string
+  label: string
 }
 
 export class SensorDataService {
@@ -713,6 +724,43 @@ export class SensorDataService {
       url: "/api/v1/sensor-data/dashboard/bar-chart",
       body: data,
       mediaType: "application/json",
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+  
+  /**
+   * Retrieves unique equipment id options.
+   * @returns TDataOptionList Successful Response
+   * @throws ApiError
+   */
+  public static readEquipmentOptions(): CancelablePromise<TDataOptionList> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/sensor-data/options/equipment",
+      errors: {
+        422: `Validation Error`,
+      },
+    })
+  }
+  
+  /**
+   * Uploads a csv file and creates new sensor data registries based on it.
+   * @returns TDataSensorDataBarChartDashboard Successful Response
+   * @throws ApiError
+   */
+   public static importSensorDataCsv(
+    data: any,
+  ): CancelablePromise<TDataSensorDataCsvImportStatus> {
+    console.log(data.data)
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/sensor-data/csv",
+      mediaType: "multipart/form-data",
+      formData: {
+        sensor_data_csv_file: data.data
+      },
       errors: {
         422: `Validation Error`,
       },
