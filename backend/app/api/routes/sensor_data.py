@@ -37,7 +37,11 @@ def read_sensors_data(
     count_query = select(func.count()).select_from(SensorData)
     count = session.exec(count_query).one()
 
-    query = select(SensorData).offset(skip).limit(limit)
+    query = select(
+        SensorData
+    ).order_by(
+        SensorData.timestamp.desc()
+    ).offset(skip).limit(limit)
     items = session.exec(query).all()
 
     return SensorDataListPublic(data=items, count=count)
