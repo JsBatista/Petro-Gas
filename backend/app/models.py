@@ -147,10 +147,13 @@ class SensorDataFetchMode(Enum):
     LAST_WEEK = 3
     LAST_MONTH = 4
     CUSTOM = 5
+    ALL_TIME = 6
 
 
 # Properties to receive on dashboard queries
 class SensorDataDashboardFetch(SQLModel):
+    skip: int 
+    limit: int
     fetch_mode: SensorDataFetchMode
     equipment_ids: Optional[list[str]] = Field(None, description="The list of equipments id to filter.")
     begin_custom_date: Optional[datetime] = Field(None, description="The start of the date interval for custom fetch.")
@@ -183,9 +186,10 @@ class SensorDataBarChartDashboardItem(SQLModel):
         self.avg=row['avg']
 
 
-# Properties to receive on dashboard queries
-class SensorDataBarChartDashboard(SQLModel):
+# Properties to receive on dashboard queries    
+class SensorDataDashboardList(SQLModel):
     data: list[SensorDataBarChartDashboardItem]
+    count: int
 
 
 class Option(SQLModel):
