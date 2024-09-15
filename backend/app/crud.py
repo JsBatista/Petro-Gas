@@ -41,6 +41,8 @@ def get_user_by_email(*, session: Session, email: str) -> User | None:
 
 def authenticate(*, session: Session, email: str, password: str) -> User | None:
     user = get_user_by_email(session=session, email=email)
+    print('INSIDE AUTHENTICATE')
+    print(user)
     if not user or not verify_password(password, user.hashed_password):
         return None
     return user

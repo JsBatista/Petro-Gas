@@ -55,7 +55,7 @@ def test_recovery_password(
             headers=normal_user_token_headers,
         )
         assert r.status_code == 200
-        assert r.json() == {"message": "Password recovery email sent"}
+        assert r.json() == {"message": "An email was sent to you containing instructions for a password reset"}
 
 
 def test_recovery_password_user_not_exits(
@@ -73,14 +73,14 @@ def test_reset_password(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     token = generate_password_reset_token(email=settings.FIRST_SUPERUSER)
-    data = {"new_password": "changethis", "token": token}
+    data = {"new_password": "INSERT_SUPERUSER_PASSWORD_HERE", "token": token}
     r = client.post(
         f"{settings.API_V1_STR}/reset-password/",
         headers=superuser_token_headers,
         json=data,
     )
     assert r.status_code == 200
-    assert r.json() == {"message": "Password updated successfully"}
+    assert r.json() == {"message": "Password reset successfully"}
 
     user_query = select(User).where(User.email == settings.FIRST_SUPERUSER)
     user = db.exec(user_query).first()
@@ -91,7 +91,7 @@ def test_reset_password(
 def test_reset_password_invalid_token(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"new_password": "changethis", "token": "invalid"}
+    data = {"new_password": "INSERT_SUPERUSER_PASSWORD_HERE", "token": "invalid"}
     r = client.post(
         f"{settings.API_V1_STR}/reset-password/",
         headers=superuser_token_headers,
@@ -101,4 +101,4 @@ def test_reset_password_invalid_token(
 
     assert "detail" in response
     assert r.status_code == 400
-    assert response["detail"] == "Invalid token"
+    assert response["detail"] == "The provided token is missing or could not be validated."

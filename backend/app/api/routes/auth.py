@@ -37,6 +37,11 @@ def login_access_token(
         password=form_data.password
     )
 
+    print('INSIDE ACCESS-TOKEN')
+    print(form_data.username)
+    print(form_data.password)
+    print(user)
+
     # Purposely not explaining if the credentials are incorrect or if the user does not exist.
     if (not user) or (not user.is_active):
         raise HTTPException(

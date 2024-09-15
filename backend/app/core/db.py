@@ -14,6 +14,10 @@ def init_db(session: Session) -> None:
         select(User).where(User.email == settings.FIRST_SUPERUSER)
     ).first()
     
+    print('INSIDE INIT DB')
+    print(settings.FIRST_SUPERUSER)
+    print(settings.FIRST_SUPERUSER_PASSWORD)
+
     if not user:
         user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,
@@ -21,3 +25,4 @@ def init_db(session: Session) -> None:
             is_superuser=True,
         )
         user = crud.create_user(session=session, user_create=user_in)
+
