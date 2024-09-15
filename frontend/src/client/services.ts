@@ -546,10 +546,14 @@ export enum TDataSensorDataFetchMode {
   LAST_48H = 2,
   LAST_WEEK = 3,
   LAST_MONTH = 4,
-  CUSTOM = 5
+  CUSTOM = 5,
+  ALL_TIME = 6
 }
 
 export type TDataSensorDataDashboardFetch = { 
+  page?: number
+  skip?: number
+  limit: number
   fetch_mode: TDataSensorDataFetchMode
   begin_custom_date?: Date | null
   end_custom_date?: Date | null
@@ -563,6 +567,7 @@ export type TDataSensorDataBarChartDashboardItem = {
 
 export type TDataSensorDataBarChartDashboard = {
   data: TDataSensorDataBarChartDashboardItem[]
+  count: number
 }
 
 export type TDataSensorDataCsvImportStatus = {

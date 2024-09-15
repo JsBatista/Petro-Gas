@@ -18,9 +18,9 @@ from app.models import (
     SensorDataCsvImportStatus,
     SensorDataLineChartDashboard,
     SensorDataLineChartDashboardItem,
-    SensorDataBarChartDashboard,
     SensorDataBarChartDashboardItem,
     SensorDataDashboardFetch,
+    SensorDataDashboardList,
     Message
 )
 from app.utils import read_csv_sensor_data_file, get_data_interval
@@ -128,7 +128,7 @@ def read_sensor_data_for_line_chart(
     return SensorDataLineChartDashboard(data=items)
 
 
-@router.post("/dashboard/bar-chart", response_model=SensorDataBarChartDashboard)
+@router.post("/dashboard/bar-chart", response_model=SensorDataDashboardList)
 def read_sensor_data_for_bar_chart(
     session: SessionDependency,
     current_user: CurrentUserDependency,
@@ -136,7 +136,7 @@ def read_sensor_data_for_bar_chart(
     """
     Get average of values from the specified time period.
     
-    Used for the dashboard bar chart.
+    Used for the dashboard bar chart and table.
     """
     if(not current_user):
         raise HTTPException(
@@ -148,6 +148,19 @@ def read_sensor_data_for_bar_chart(
         (date_interval_begin, date_interval_end) = get_data_interval(fetch_data)
     except ValueError as e: 
         raise HTTPException(status_code=400, detail= " ".join(e.args))
+        
+    count_query = select(
+        func.count(SensorData.equipment_id.distinct())
+    ).select_from(
+        SensorData
+    ).where(
+        and_(
+            SensorData.timestamp > date_interval_begin,
+            SensorData.timestamp <= date_interval_end
+        )
+    )
+
+    count = session.exec(count_query).one()
 
     query = select(
         SensorData.equipment_id, 
@@ -170,6 +183,10 @@ def read_sensor_data_for_bar_chart(
         SensorData.equipment_id
     ).order_by(
         SensorData.equipment_id
+    ).offset(
+        fetch_data.skip
+    ).limit(
+        fetch_data.limit
     )
     
     result = session.exec(query)
@@ -179,7 +196,7 @@ def read_sensor_data_for_bar_chart(
         for row in result.mappings().all()
     ]
 
-    return SensorDataBarChartDashboard(data=items)
+    return SensorDataDashboardList(data=items, count=count)
 
 
 @router.post("/", response_model=SensorDataPublic)
