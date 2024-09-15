@@ -13,10 +13,6 @@ def init_db(session: Session) -> None:
     user = session.exec(
         select(User).where(User.email == settings.FIRST_SUPERUSER)
     ).first()
-    
-    print('INSIDE INIT DB')
-    print(settings.FIRST_SUPERUSER)
-    print(settings.FIRST_SUPERUSER_PASSWORD)
 
     if not user:
         user_in = UserCreate(

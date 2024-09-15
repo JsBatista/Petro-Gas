@@ -23,9 +23,6 @@ def create_access_token(subject: str | Any, time_to_expire: timedelta) -> str:
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    print('INSIDE VERIFY PASSWORD')
-    print(settings.SECRET_KEY)
-    print(password)
     return pwd_context.verify(password, hashed_password)
 
 
