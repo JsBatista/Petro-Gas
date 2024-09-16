@@ -30,7 +30,7 @@ const usersSearchSchema = z.object({
 
 export const Route = createFileRoute("/_layout/admin")({
   component: Admin,
-  validateSearch: (search) => usersSearchSchema.parse(search),
+  validateSearch: (search: any) => usersSearchSchema.parse(search),
 })
 
 const PER_PAGE = 5
@@ -49,7 +49,7 @@ function UsersTable() {
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const setPage = (page: number) =>
-    navigate({ search: (prev) => ({ ...prev, page }) })
+    navigate({ search: (prev: any) => ({ ...prev, page }) })
 
   const {
     data: users,
@@ -57,7 +57,7 @@ function UsersTable() {
     isPlaceholderData,
   } = useQuery({
     ...getUsersQueryOptions({ page }),
-    placeholderData: (prevData) => prevData,
+    placeholderData: (prevData: any) => prevData,
   })
 
   const hasNextPage = !isPlaceholderData && users?.data.length === PER_PAGE

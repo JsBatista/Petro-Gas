@@ -2,6 +2,7 @@ from datetime import date, datetime
 import uuid
 from typing import Any, List
 
+from app import crud
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from sqlmodel import select
 from sqlalchemy import func, sql, and_
@@ -46,9 +47,9 @@ def read_sensors_data(
     ).order_by(
         SensorData.equipment_id
     ).offset(skip).limit(limit)
-    items = session.exec(query).all()
+    sensors = session.exec(query).all()
 
-    return SensorDataListPublic(data=items, count=count)
+    return SensorDataListPublic(data=sensors, count=count)
 
 
 @router.get("/options/equipment", response_model=OptionList)
@@ -67,12 +68,12 @@ def read_equipment_options(
     
     result = session.exec(query).all()
 
-    items: List[Option] = [
+    options: List[Option] = [
         Option(row)
         for row in result
     ]
 
-    return OptionList(data=items)
+    return OptionList(data=options)
 
 
 @router.get("/{id}", response_model=SensorDataPublic)
@@ -82,10 +83,10 @@ def read_sensor_data(session: SessionDependency, id: uuid.UUID) -> Any:
 
     Not to be mistaken for the getByEquipmentId function.
     """
-    item = session.get(SensorData, id)
-    if not item:
+    sensorData = session.get(SensorData, id)
+    if not sensorData:
         raise HTTPException(status_code=404, detail="Sensor data not found")
-    return item
+    return sensorData
 
 
 @router.get("/equipment/{equipment_id}", response_model=SensorDataListPublic)
@@ -94,10 +95,8 @@ def read_sensor_data_by_equipment(session: SessionDependency, equipment_id: str)
     Get all sensor data emmited by a a specific equipment.
     """
 
-    query = select(SensorData).where(SensorData.equipment_id == equipment_id)
-    items = session.exec(query).all()
-
-    return SensorDataListPublic(data=items, count=len(items))
+    sensors = crud.get_sensor_data_by_equipment_id(session=session, equipment_id=equipment_id)
+    return SensorDataListPublic(data=sensors, count=len(sensors))
 
 
 @router.post("/dashboard/line-chart", response_model=SensorDataLineChartDashboard)
@@ -117,15 +116,15 @@ def read_sensor_data_for_line_chart(
 
     result = session.execute(
         sql.text('SELECT * FROM avg_last_24(:current_date, :equipments);'), 
-        {"current_date": datetime(2023, 2, 14, 2, 30), "equipments": []}
+        {"current_date": datetime.today(), "equipments": []}
     )
 
-    items: List[SensorDataLineChartDashboardItem] = [
+    sensors: List[SensorDataLineChartDashboardItem] = [
         SensorDataLineChartDashboardItem(row)
         for row in result.mappings().all()
     ]
 
-    return SensorDataLineChartDashboard(data=items)
+    return SensorDataLineChartDashboard(data=sensors)
 
 
 @router.post("/dashboard/bar-chart", response_model=SensorDataDashboardList)
@@ -191,12 +190,12 @@ def read_sensor_data_for_bar_chart(
     
     result = session.exec(query)
 
-    items: List[SensorDataBarChartDashboardItem] = [
+    sensors: List[SensorDataBarChartDashboardItem] = [
         SensorDataBarChartDashboardItem(row)
         for row in result.mappings().all()
     ]
 
-    return SensorDataDashboardList(data=items, count=count)
+    return SensorDataDashboardList(data=sensors, count=count)
 
 
 @router.post("/", response_model=SensorDataPublic)

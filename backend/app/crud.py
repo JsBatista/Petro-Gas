@@ -52,3 +52,20 @@ def create_sensor_data(*, session: Session, sensor_create_data: SensorDataCreate
     session.commit()
     session.refresh(sensor_data)
     return sensor_data
+
+
+def get_sensor_data_by_id(*, session: Session, id: str) -> SensorData:
+    sensor = session.get(SensorData, id)
+    return sensor
+
+
+def get_sensor_data_by_equipment_id(*, session: Session, equipment_id: str) -> list[SensorData]:
+    query = select(SensorData).where(SensorData.equipment_id == equipment_id)
+    sensors = session.exec(query).all()
+    return sensors
+
+
+def delete_sensor_data_by_id(*, session: Session, id: str):
+    sensor_data = session.get(SensorData, id)
+    session.delete(sensor_data)
+    session.commit()
