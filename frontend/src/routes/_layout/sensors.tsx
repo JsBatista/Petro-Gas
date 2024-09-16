@@ -29,7 +29,7 @@ const sensorDataSearchSchema = z.object({
 
 export const Route = createFileRoute("/_layout/sensors")({
   component: SensorData,
-  validateSearch: (search) => sensorDataSearchSchema.parse(search),
+  validateSearch: (search: any) => sensorDataSearchSchema.parse(search),
 })
 
 const PER_PAGE = 5
@@ -47,7 +47,7 @@ function SensorDataTable() {
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const setPage = (page: number) =>
-    navigate({ search: (prev) => ({ ...prev, page }) })
+    navigate({ search: (prev: any) => ({ ...prev, page }) })
 
   const {
     data: sensorsData,
@@ -55,7 +55,7 @@ function SensorDataTable() {
     isPlaceholderData,
   } = useQuery({
     ...getSensorDataQueryOptions({ page }),
-    placeholderData: (prevData) => prevData,
+    placeholderData: (prevData: any) => prevData,
   })
 
   const hasNextPage = !isPlaceholderData && sensorsData?.data.length === PER_PAGE

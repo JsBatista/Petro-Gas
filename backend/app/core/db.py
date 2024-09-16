@@ -13,7 +13,7 @@ def init_db(session: Session) -> None:
     user = session.exec(
         select(User).where(User.email == settings.FIRST_SUPERUSER)
     ).first()
-    
+
     if not user:
         user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,
@@ -21,3 +21,4 @@ def init_db(session: Session) -> None:
             is_superuser=True,
         )
         user = crud.create_user(session=session, user_create=user_in)
+

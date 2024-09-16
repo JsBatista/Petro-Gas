@@ -67,7 +67,7 @@ function Dashboard() {
       end_custom_date: getValues("end_custom_date"),
       equipment_ids: getValues("equipment_ids")
     }),
-    placeholderData: (prevData) => prevData,
+    placeholderData: (prevData: any) => prevData,
   })
 
   const {
@@ -75,7 +75,7 @@ function Dashboard() {
     isPending: isPendingEquipmentOptions,
   } = useQuery({
     ...getEquipmentOptionsQueryOptions(),
-    placeholderData: (prevData) => prevData,
+    placeholderData: (prevData: any) => prevData,
   })
 
   function getSensorDataQueryOptions(data: TDataSensorDataDashboardFetch) {
@@ -95,7 +95,7 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    watch((value) => {
+    watch((value: any) => {
       let data = {
         page: value['page']??0,
         skip: (value['page']??0)*5,
@@ -111,6 +111,7 @@ function Dashboard() {
   }, [queryClient, watch]);
 
   const onSubmit: SubmitHandler<TDataSensorDataDashboardFetch> = async (data) => {
+    console.log(data)
     return
   }
 
@@ -232,7 +233,7 @@ function Dashboard() {
                   flexDirection="row"
                   gap={4}
                 >
-                  <ResponsiveContainer width="50%" heigth={800}>
+                  <ResponsiveContainer width="50%">
                     <BarChart
                         width={1600}
                         height={300}
@@ -273,7 +274,7 @@ function Dashboard() {
                         </Tbody>
                       ) : (
                         <Tbody>
-                          {sensorsData?.data.map((sensorData) => (
+                          {sensorsData?.data.map((sensorData: any) => (
                             <Tr key={sensorData.equipment_id} opacity={isPlaceholderData ? 0.5 : 1}>
                               <Td isTruncated maxWidth="150px">
                                 {sensorData.equipment_id}

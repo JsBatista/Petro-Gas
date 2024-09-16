@@ -5,23 +5,14 @@ import {
   FormControl, 
   FormLabel, 
   Input, 
-  Select,
-  SkeletonText, 
   Table, 
   TableContainer, 
-  Tbody, 
-  Td, 
-  Text, 
-  Tr 
+  Text
 } from "@chakra-ui/react"
-import {
-  Select as MultiSelect,
-} from "chakra-react-select";
-import { type SubmitHandler, useForm } from "react-hook-form"
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useRef, useState } from "react"
-import { ApiError, SensorDataService, TDataSensorDataDashboardFetch, TDataSensorDataFetchMode } from "../../client";
+import { useRef, useState } from "react"
+import { ApiError, SensorDataService } from "../../client";
 import useCustomToast from "../../hooks/useCustomToast";
 import { handleError } from "../../utils"
 
@@ -38,7 +29,7 @@ function Upload() {
   const mutation = useMutation({
     mutationFn: (data: any) =>
       SensorDataService.importSensorDataCsv({ data: data }),
-    onSuccess: (response) => {
+    onSuccess: (response: any) => {
       if(response.count_fail == 0)
         showToast(
           "Success!", 
@@ -104,7 +95,7 @@ function Upload() {
                 flexDirection="row"
                 gap={4}
               >
-                <FormControl id="fetch_mode">
+                <FormControl id="file">
                   <FormLabel>File</FormLabel>
                   <Input 
                     placeholder='Select a csv file' 

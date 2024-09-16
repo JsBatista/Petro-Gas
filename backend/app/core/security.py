@@ -22,9 +22,9 @@ def create_access_token(subject: str | Any, time_to_expire: timedelta) -> str:
     return encoded_jwt
 
 
-def verify_password(pwd: str, hashed_pwd: str) -> bool:
-    return pwd_context.verify(pwd, hashed_pwd)
+def verify_password(password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(password, hashed_password)
 
 
-def get_password_hash(pwd: str) -> str:
-    return pwd_context.hash(pwd)
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)

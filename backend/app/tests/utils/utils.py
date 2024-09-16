@@ -14,6 +14,10 @@ def random_email() -> str:
     return f"{random_lower_string()}@{random_lower_string()}.com"
 
 
+def random_float() -> str:
+    return random.uniform(0, 100)
+
+
 def get_superuser_token_headers(client: TestClient) -> dict[str, str]:
     login_data = {
         "username": settings.FIRST_SUPERUSER,
